@@ -1,6 +1,19 @@
-header{
+.titulo{
     font-size: 25px;
-    height: 5%;
+    height: 50px;
     background-color: coral;
-
+    text-align: center;
+    padding-top: 12px;
+    border-radius: 10px;
+}
+.nav{
+    height: 30px;
+    background-color: crimson;
+    padding-top: 10px;
+    border-radius: 10px;
+}
+.btn{
+    background-color: crimson;
+    border: none;
+    font-size: 15px;
 }
