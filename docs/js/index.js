@@ -28,6 +28,7 @@ function iniSesion(){
     document.getElementById('div').innerHTML = "<form id='formi'>Usuario: <input class='usu' name='usu' type='text' placeholder='usuario'/> <br>"+
                                 "Contraseña: <input class='pass' name='pass' type='password' placeholder='contraseña' /><br>"+
                                 "<input type='button' name='Button' value='Iniciar Sesión' onclick='sesion(this.form)'>"+
+                                "<input type='button' name='button' value='Registrarme' onclick='nUsu()'>" +
                                 "</form>";
 }
 function sesion(form){
@@ -51,6 +52,28 @@ function sesion(form){
         }
     });
 }
+function nUsu(){
+    document.getElementById('div').innerHTML = "<form>Usuario: <input type='text' name='nom' placeholder='Inserte nombre de usuario'><br>"
+                                    + "Contraseña: <input type='text' name='pass' placeholder='Ingrese la contraseña'> <br>"
+                                    + "Confirmar contraseña: <input type='password' name='conf' placeholder='Confirme contraseña'><br>s"
+                                    + "<input type='button' value='Registrar' onclick='regUsu(this.form)'></form>";
+}
+function regUsu(form){
+    if(form.pass.value === form.conf.value){
+        database.ref('Usuarios/'+ form.nom.value).set({
+            nom: form.nom.value,
+            data: {
+                pass: form.pass.value,
+                reg: []
+            }
+        }).then(() => {
+            alert("Usuario registrado");
+            iniSesion();
+        });
+    }else{
+        alert("Las contraseñas no coinciden");
+    }
+}
 function registro(){
     document.getElementById('div').innerHTML = "<form name='form2'>Actividad:<input type='text' name='nom' placeholder='Nombre de la actividad'><br>"
         +"Descripción<input type='text' name='des' placeholder='Descripcion de la actividad'><br>"
@@ -63,18 +86,23 @@ function regAct(form){
     var a=[];        
     var nom = form.nom.value, des = form.des.value;
     
-    database.ref("Usuarios/" + "Jan" + "/data/reg").get().then(x => {
-        x.val().forEach(y => {
-            a.push(y);
-        });
-        a.push({nom: nom, des: des});
+    database.ref("Usuarios/" + sessionStorage.getItem('usu') + "/data/reg").get().then(x => {
+        if(x.exists()){
+            x.val().forEach(y => {
+                a.push(y);
+            });
+            a.push({nom: nom, des: des});            
+        }else{
+            a.push({nom: nom, des: des});
+        }
+        
     }).then(() => {
-        database.ref("Usuarios/" + "Jan" + "/data/reg").set(a).then(existentes())
+        database.ref("Usuarios/" + sessionStorage.getItem('usu') + "/data/reg").set(a).then(existentes())
     });
 }
 function existentes(){
-    database.ref("Usuarios/"+"Jan"+"/data/reg").get().then((snapshot)=>{
-        if(snapshot){
+    database.ref("Usuarios/"+ sessionStorage.getItem('usu') +"/data/reg").get().then((snapshot)=>{
+        if(snapshot.exists()){
             var reg = "Registros actuales: <br>";
             console.log(snapshot.val());
             for(x of snapshot.val()){
