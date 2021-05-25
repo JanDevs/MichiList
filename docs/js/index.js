@@ -31,17 +31,25 @@ function iniSesion(){
                                 "</form>";
 }
 function sesion(form){
-    console.log(form.usu.value);
-    if(form.usu.value === "asd"){
-        if(form.pass.value === "asd"){
-            sessionStorage.setItem("usu", form.usu.value);
-            console.log("Sesion iniciada")
-            document.getElementById('div').innerHTML = "Sesión de: " + form.usu.value;
-            document.getElementById('nav').innerHTML = "<button name= 'ini' class='btn' onclick='javascript:index()'>Inicio</button>" 
-            + "<button id='reg' class='btn' onclick='registro()'>Registros</button>"
-            + "<button name='cer' class='btncer'>Cerrar sesión</button>"
+    var usuario = form.usu.value;
+    database.ref("Usuarios/" + usuario).get().then(x => {
+        if(x.exists()){
+            database.ref("Usuarios/" + usuario + "/data").get().then(y => {
+                if(y.val().pass === form.pass.value){
+                    sessionStorage.setItem("usu", form.usu.value);
+                    console.log("Sesion iniciada")
+                    document.getElementById('div').innerHTML = "Sesión de: " + form.usu.value;
+                    document.getElementById('nav').innerHTML = "<button name= 'ini' class='btn' onclick='javascript:index()'>Inicio</button>" 
+                    + "<button id='reg' class='btn' onclick='registro()'>Registros</button>"
+                    + "<button name='cer' class='btncer'>Cerrar sesión</button>"
+                }else{
+                    alert("Contraseña equivocada");
+                }
+            })
+        }else{
+            alert("El usuario no existe");
         }
-    }
+    });
 }
 function registro(){
     document.getElementById('div').innerHTML = "<form name='form2'>Actividad:<input type='text' name='nom' placeholder='Nombre de la actividad'><br>"
