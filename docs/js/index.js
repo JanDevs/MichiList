@@ -11,8 +11,13 @@ const firebaseConfig = {
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
+
 // Get a reference to the database service
 var database = firebase.database();
+var db = firebase.firestore();
+var storage = firebase.storage();
+var storageRef = storage.ref();
+var posts = storageRef.child('mishis');
 database.ref('Usuarios/'+'Jan').set({
     nom: 'Jan',
     data: {
@@ -24,6 +29,22 @@ database.ref('Usuarios/'+'Jan').set({
 function index(){
     document.getElementById('div').innerHTML = "En esta página se hace registro de cosas variadas muy shidoris";
 }
+function indexPost(){
+    var cosa = "";
+    db.collection("posts").get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            var mishiRef = storageRef.child(doc.data().imagen);
+            console.log(doc.data().imagen);
+            cosa += `<div>${doc.data().Fecha}<br>
+                        ${doc.data().Texto}<br>
+                        <img src='${mishiRef.fullPath}'>
+                    </div><br>`;
+        });
+    }).then(() => {
+        document.getElementById('div').innerHTML = cosa;
+    });
+    
+}
 function iniSesion(){
     document.getElementById('div').innerHTML = "<form id='formi'>Usuario: <input class='usu' name='usu' type='text' placeholder='usuario'/> <br>"+
                                 "Contraseña: <input class='pass' name='pass' type='password' placeholder='contraseña' /><br>"+
@@ -33,6 +54,18 @@ function iniSesion(){
 }
 function sesion(form){
     var usuario = form.usu.value;
+    var pass = form.pass.value;
+    firebase.auth().signInWithEmailAndPassword(usuario, pass).then((userCredential) => {
+        console.log(userCredential.user);
+        console.log("Sesion iniciada")
+        document.getElementById('div').innerHTML = "Sesión de: " + form.usu.value;
+        document.getElementById('nav').innerHTML = "<button name= 'ini' class='btn' onclick='javascript:indexPost()'>Inicio</button>" 
+                + "<button id='reg' class='btn' onclick='registro()'>Registros</button>"
+                + "<button name='cer' class='btncer'>Cerrar sesión</button>";
+    }).catch((error) => {
+        console.log(error);
+    })
+    /*
     database.ref("Usuarios/" + usuario).get().then(x => {
         if(x.exists()){
             database.ref("Usuarios/" + usuario + "/data").get().then(y => {
@@ -51,6 +84,7 @@ function sesion(form){
             alert("El usuario no existe");
         }
     });
+    */
 }
 function nUsu(){
     document.getElementById('div').innerHTML = "<form>Usuario: <input type='text' name='nom' placeholder='Inserte nombre de usuario'><br>"
@@ -59,6 +93,23 @@ function nUsu(){
                                     + "<input type='button' value='Registrar' onclick='regUsu(this.form)'></form>";
 }
 function regUsu(form){
+    var usuario = form.nom.value;
+    var pass = form.pass.value;
+    if(pass === form.conf.value){
+        firebase.auth().createUserWithEmailAndPassword(usuario, pass).then((userCredential) => {
+            // Signed in
+            alert("Usuario registrado exitosamente");
+            // ...
+        }).catch((error) => {
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            // ..
+        });
+    }else{
+        alert("Las contraseñas no coinciden");
+    }
+    
+    /*
     if(form.pass.value === form.conf.value){
         database.ref('Usuarios/'+ form.nom.value).set({
             nom: form.nom.value,
@@ -72,7 +123,7 @@ function regUsu(form){
         });
     }else{
         alert("Las contraseñas no coinciden");
-    }
+    }*/
 }
 function registro(){
     document.getElementById('div').innerHTML = "<form name='form2'>Actividad:<input type='text' name='nom' placeholder='Nombre de la actividad'><br>"
@@ -111,5 +162,12 @@ function existentes(){
                 
             document.getElementById('registros').innerHTML = reg;
         }else{console.log("No existe")}
+    })
+}
+function getPost(){
+    database.ref("Post").get().then((p) => {
+        if(p.exists()){
+
+        }
     })
 }
