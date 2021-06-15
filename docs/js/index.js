@@ -6,6 +6,7 @@ const firebaseConfig = {
     authDomain: "mishis-90e0e.firebaseapp.com",
     projectId: "mishis-90e0e",
     storageBucket: "mishis-90e0e.appspot.com",
+    databaseURL: "https://mishis-90e0e-default-rtdb.firebaseio.com",
     messagingSenderId: "322242581078",
     appId: "1:322242581078:web:e0613936f075f12d2de1f7"
 };
@@ -17,7 +18,8 @@ var database = firebase.database();
 var db = firebase.firestore();
 var storage = firebase.storage();
 var storageRef = storage.ref();
-var posts = storageRef.child('mishis');
+var posts = storageRef.child('picsa.png');
+
 database.ref('Usuarios/'+'Jan').set({
     nom: 'Jan',
     data: {
@@ -31,18 +33,37 @@ function index(){
 }
 function indexPost(){
     var cosa = "";
+    var ind = 0;
+    var imagenes = [];
     db.collection("posts").get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-            var mishiRef = storageRef.child(doc.data().imagen);
-            console.log(doc.data().imagen);
             cosa += `<div>${doc.data().Fecha}<br>
                         ${doc.data().Texto}<br>
-                        <img src='${mishiRef.fullPath}'>
-                    </div><br>`;
+                        <img id='img${ind}' src=""/></div><br>`;
+            imagenes.push(doc.data().imagen);
+            ind++;
         });
     }).then(() => {
+        console.log(cosa);
         document.getElementById('div').innerHTML = cosa;
-    });
+    }).then(() => {
+        console.log("a");
+        console.log(imagenes);
+        for(var i = 0; i < imagenes.length; i++){
+            var buscar = imagenes[i];
+            console.log(buscar);
+            var id = "img"+i;
+            console.log(id);
+            storageRef.child(buscar).getDownloadURL().then(url => {
+                document.getElementById(id).src = url;
+            });
+        }
+        
+    }).finally(() =>{
+        storageRef.child(imagenes[0]).getDownloadURL().then(url => {
+            document.getElementById('img0').src = url;
+        })
+    })
     
 }
 function iniSesion(){
