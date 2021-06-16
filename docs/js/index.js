@@ -35,7 +35,14 @@ function indexPost(){
     var cosa = "";
     var ind = 0;
     var imagenes = [];
-    db.collection("posts").get().then((querySnapshot) => {
+    cosa += "<div name='create' id='create'>"
+            + "<form>"
+            + "<p name='titulo'>Crear un nuevo post</p>"
+            + "<textarea name='txtPost' id='txt' placeholder='Ingrese el texto'> </textarea><br>"
+            + "<input type='file' name='img' id='file'><br>"
+            + "<input type='button' id='subPost' value='Subir post' onClick='publiPost(this.form)'/>"
+            + "</form></div>"
+    db.collection("posts").orderBy("Fecha", "desc").get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
             cosa += `<div>${doc.data().Fecha}<br>
                         ${doc.data().Texto}<br>
@@ -49,21 +56,26 @@ function indexPost(){
     }).then(() => {
         console.log("a");
         console.log(imagenes);
-        for(var i = 0; i < imagenes.length; i++){
-            var buscar = imagenes[i];
-            console.log(buscar);
-            var id = "img"+i;
-            console.log(id);
-            storageRef.child(buscar).getDownloadURL().then(url => {
-                document.getElementById(id).src = url;
-            });
-        }
-        
-    }).finally(() =>{
-        storageRef.child(imagenes[0]).getDownloadURL().then(url => {
-            document.getElementById('img0').src = url;
+        imagenes.forEach((x, y) => {
+            storageRef.child(x).getDownloadURL().then(z => {document.getElementById("img"+y).src = z});
         })
     })
+}
+function publiPost(form){
+    var txt = form.txtPost.value;
+    var email = "a@a.com"
+    var img = form.img.files[0];
+    let id = Math.floor(Math.random() * 1092398349);
+    let rut = '/mishis/' + img.name + id + '/' + img.name;    
+    const d = new Date();
+    const fecha = d.getDate() + '/' + d.getMonth() + '/' + d.getFullYear(); 
+    storageRef.child(rut).put(img).then(alert("si se pudo")).catch((e) => {console.log(e)});
+    db.collection('posts').doc().set({
+        Fecha: fecha,
+        Texto: txt,
+        Usu: email,
+        imagen: rut
+    }).finally(setTimeout(indexPost(), 1500));
     
 }
 function iniSesion(){
@@ -86,26 +98,6 @@ function sesion(form){
     }).catch((error) => {
         console.log(error);
     })
-    /*
-    database.ref("Usuarios/" + usuario).get().then(x => {
-        if(x.exists()){
-            database.ref("Usuarios/" + usuario + "/data").get().then(y => {
-                if(y.val().pass === form.pass.value){
-                    sessionStorage.setItem("usu", form.usu.value);
-                    console.log("Sesion iniciada")
-                    document.getElementById('div').innerHTML = "Sesión de: " + form.usu.value;
-                    document.getElementById('nav').innerHTML = "<button name= 'ini' class='btn' onclick='javascript:index()'>Inicio</button>" 
-                    + "<button id='reg' class='btn' onclick='registro()'>Registros</button>"
-                    + "<button name='cer' class='btncer'>Cerrar sesión</button>"
-                }else{
-                    alert("Contraseña equivocada");
-                }
-            })
-        }else{
-            alert("El usuario no existe");
-        }
-    });
-    */
 }
 function nUsu(){
     document.getElementById('div').innerHTML = "<form>Usuario: <input type='text' name='nom' placeholder='Inserte nombre de usuario'><br>"
@@ -122,29 +114,12 @@ function regUsu(form){
             alert("Usuario registrado exitosamente");
             // ...
         }).catch((error) => {
-            var errorCode = error.code;
-            var errorMessage = error.message;
+            console.log(error);
             // ..
         });
     }else{
         alert("Las contraseñas no coinciden");
-    }
-    
-    /*
-    if(form.pass.value === form.conf.value){
-        database.ref('Usuarios/'+ form.nom.value).set({
-            nom: form.nom.value,
-            data: {
-                pass: form.pass.value,
-                reg: []
-            }
-        }).then(() => {
-            alert("Usuario registrado");
-            iniSesion();
-        });
-    }else{
-        alert("Las contraseñas no coinciden");
-    }*/
+    }   
 }
 function registro(){
     document.getElementById('div').innerHTML = "<form name='form2'>Actividad:<input type='text' name='nom' placeholder='Nombre de la actividad'><br>"
