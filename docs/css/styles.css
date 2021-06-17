@@ -35,3 +35,8 @@
     font-size: 25px;
     text-align: center;
 }
+img{
+    max-width: 30%;
+    
+    max-height: 30%;
+}
