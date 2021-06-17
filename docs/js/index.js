@@ -1,6 +1,3 @@
-// Set the configuration for your app
-// TODO: Replace with your project's config object
-// Your web app's Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyACT3iN-MlIjnmz_fUdVuOEmhdTa0i-XWY",
     authDomain: "mishis-90e0e.firebaseapp.com",
@@ -12,14 +9,12 @@ const firebaseConfig = {
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-
 // Get a reference to the database service
 var database = firebase.database();
 var db = firebase.firestore();
 var storage = firebase.storage();
 var storageRef = storage.ref();
 var posts = storageRef.child('picsa.png');
-
 database.ref('Usuarios/'+'Jan').set({
     nom: 'Jan',
     data: {
@@ -37,15 +32,16 @@ function indexPost(){
     var imagenes = [];
     cosa += "<div name='create' id='create'>"
             + "<form>"
-            + "<p name='titulo'>Crear un nuevo post</p>"
+            + "<p class='creaPost'>Crear un nuevo post</p>"
             + "<textarea name='txtPost' id='txt' placeholder='Ingrese el texto'> </textarea><br>"
             + "<input type='file' name='img' id='file'><br>"
             + "<input type='button' id='subPost' value='Subir post' onClick='publiPost(this.form)'/>"
             + "</form></div>"
     db.collection("posts").limit(30).orderBy("Fecha", "desc").get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-            cosa += `<div>${doc.data().Fecha}<br>
-                        ${doc.data().Usu}: ${doc.data().Texto}<br>
+            cosa += `<div class='posteos' id='posteos'> 
+                        <p class='txtPosteos'>${doc.data().Fecha}<br>
+                       ${doc.data().Usu}: ${doc.data().Texto}</p>
                         <img id='img${ind}' src=""/></div><br>`;
             imagenes.push(doc.data().imagen);
             ind++;
@@ -94,7 +90,7 @@ function sesion(form){
         document.getElementById('div').innerHTML = "Sesión de: " + sessionStorage.getItem('nomUsu');
         document.getElementById('nav').innerHTML = "<button name= 'ini' class='btn' onclick='javascript:indexPost()'>Inicio</button>" 
                 + "<button id='perfil' class='btn' onclick='perfil()'>Editar perfil</button>"
-                + "<button name='cer' class='btncer'>Cerrar sesión</button>";
+                + "<button name='cer' class='btncer' onclick='cerrarSesion()'>Cerrar sesión</button>";
     }).catch((error) => {
         console.log(error);
     })
@@ -124,12 +120,6 @@ function regUsu(form){
     }else{
         alert("Las contraseñas no coinciden");
     }   
-}
-function getPost(){
-    database.ref("Post").get().then((p) => {
-        if(p.exists()){
-        }
-    })
 }
 function perfil(){
     document.getElementById('div').innerHTML = `Actualizar perfil<br>
@@ -178,7 +168,7 @@ function actualizaPerfil(form){
             firebase.auth().signInWithEmailAndPassword(corconf, conf)
         }
     },4000)).then(setTimeout(() => document.getElementById('div').innerHTML = `<h1>Datos actualizados correctamente c:</h1>`, 1000));
-    
-    
-    
+}
+function cerrarSesion(){
+    document.location.reload();
 }
