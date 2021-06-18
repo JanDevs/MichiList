@@ -15,19 +15,29 @@
     background: none;
     border: 2px;
     border-style: solid;
-    border-color: #db3434;
     border-radius: 20px;
     line-height: 25px;
     font-size: 25px;
     text-align: center;
+    color: rgb(241, 60, 60);
 }
-.btncer{
-    background-color: rgb(224, 39, 39);
-    width: 24%;
-    border: none;
+.btnIniReg{
+    width: 16%;
+    background: none;
     border: 2px;
     border-style: solid;
-    border-color: #b22222;
+    border-radius: 20px;
+    line-height: 25px;
+    font-size: 15px;
+    text-align: center;
+    color: rgb(241, 60, 60);
+}
+.btncer{
+    background-color: rgba(236, 95, 95, 0.712);
+    width: 24%;
+    border: 2px;
+    border-style: solid;
+    color: rgb(236, 27, 27);
     border-radius: 20px;
     line-height: 25px;
     font-size: 25px;
@@ -46,6 +56,18 @@ img{
     border-radius: 10px;
     max-width: 60%;
 }
+.txt{
+    border: 2px;
+    border-radius: 15px;
+    border-style: solid;
+    padding: 5px;
+    border-color: rgba(243, 76, 76, 0.829);
+    background-color: rgba(235, 109, 240, 0.158);
+}
+.usuP{
+    padding-top: 10px;
+    font-size: large;
+}
 .txtPosteos{
     font-size: x-large;
     max-width: 60%;
@@ -54,4 +76,49 @@ img{
 }
 .creaPost{
     font-size: larger;
+}
+body{
+    background-color: rgba(224, 121, 245, 0.452);
+}
+.bien{
+    animation-name: wenas;
+    animation-duration: 800ms;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-timing-function: linear;
+}
+textarea{
+    border-radius: 5px;
+    border-style: dashed;
+    border: 2px;
+    height: 80px;
+    width: 70%;
+    resize: none;    
+}
+body {
+    font-family: "Audiowide", sans-serif;
+}
+.img{
+    border-radius: 5px;
+    border-color: rgb(253, 119, 119);
+}
+.btnimg{
+    width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+.btnimg + label{
+    font-size: 1.25em;
+    font-weight: 700;
+    color: white;
+    color: rgb(236, 27, 27);
+    display: inline-block;
+}
+@keyframes wenas {
+    from{color: rgb(253, 119, 119); letter-spacing: 10px;}
+    to{color: rgba(213, 47, 255, 0.555); letter-spacing: 5px;}
+    to{color: rgba(102, 142, 252, 0.658); letter-spacing: 0px;}   
 }

@@ -24,7 +24,7 @@ database.ref('Usuarios/'+'Jan').set({
     }
 });
 function index(){
-    document.getElementById('div').innerHTML = "En esta página se hace registro de cosas variadas muy shidoris";
+    document.getElementById('div').innerHTML = "<h1 class='bien'>Bienvenido</h1>";
 }
 function indexPost(){
     var cosa = "";
@@ -33,9 +33,10 @@ function indexPost(){
     cosa += "<div name='create' id='create'>"
             + "<form>"
             + "<p class='creaPost'>Crear un nuevo post</p>"
-            + "<textarea name='txtPost' id='txt' placeholder='Ingrese el texto'> </textarea><br>"
-            + "<input type='file' name='img' id='file'><br>"
-            + "<input type='button' id='subPost' value='Subir post' onClick='publiPost(this.form)'/>"
+            + "<textarea name='txtPost' id='txt' placeholder='Ingrese el texto'></textarea><br>"
+            + "<input type='button' class='btn' id='subImg' onclick='obArch()' value='Imagen'><input type='file' class='btnimg' name='img' id='file' onchange='labelArchivo(this)'><br>"
+            + "<label id='archivoTexto' for='file'></label><br>"
+            + "<input type='button' id='subPost' class='btn' value='Subir post' onClick='publiPost(this.form)'/>"
             + "</form></div>"
     db.collection("posts").limit(30).orderBy("Fecha", "desc").get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
@@ -53,6 +54,15 @@ function indexPost(){
             storageRef.child(x).getDownloadURL().then(z => {document.getElementById("img"+y).src = z});
         })
     })
+}
+function obArch(){
+    document.getElementById('file').click();
+    document.getElementById('subImg').style.display = "none";
+}
+function labelArchivo(obj){
+    var arc = obj.value;
+    var nom = arc.split("\\");
+    document.getElementById("archivoTexto").innerHTML = nom[nom.length-1]
 }
 function publiPost(form){
     var txt = form.txtPost.value;
@@ -72,10 +82,10 @@ function publiPost(form){
     
 }
 function iniSesion(){
-    document.getElementById('div').innerHTML = "<form id='formi'>Usuario: <input class='usu' name='usu' type='text' placeholder='usuario'/> <br>"+
-                                "Contraseña: <input class='pass' name='pass' type='password' placeholder='contraseña' /><br>"+
-                                "<input type='button' name='Button' value='Iniciar Sesión' onclick='sesion(this.form)'>"+
-                                "<input type='button' name='button' value='Registrarme' onclick='nUsu()'>" +
+    document.getElementById('div').innerHTML = "<form id='formi'><p class='usuP'>Usuario:</p> <input class='txt' name='usu' type='text' placeholder='usuario'/>"+
+                                "<p class='usuP'>Contraseña: </p><input class='txt' name='pass' type='password' placeholder='contraseña' /><br><br><br>"+
+                                "<input type='button' class='btnIniReg' name='Button' value='Iniciar Sesión' onclick='sesion(this.form)'>     "+
+                                "<input type='button' class='btnIniReg' name='button' value='Registrarme' onclick='nUsu()'>" +
                                 "</form>";
 }
 function sesion(form){
@@ -96,11 +106,11 @@ function sesion(form){
     })
 }
 function nUsu(){
-    document.getElementById('div').innerHTML = "<form>Correo: <input type='email' name='nom' placeholder='Inserte correo'><br>"
-                                    + "Nombre de usuario: <input type='text' name='usu' placeholder='Inserte nombre de usuario'><br>"
-                                    + "Contraseña: <input type='text' name='pass' placeholder='Ingrese la contraseña'> <br>"
-                                    + "Confirmar contraseña: <input type='password' name='conf' placeholder='Confirme contraseña'><br>s"
-                                    + "<input type='button' value='Registrar' onclick='regUsu(this.form)'></form>";
+    document.getElementById('div').innerHTML = "<br><br><form>Correo: <input type='email' class='txt' name='nom' placeholder='Inserte correo'><br><br>"
+                                    + "Nombre de usuario: <input type='text' class='txt' name='usu' placeholder='Inserte nombre de usuario'><br><br>"
+                                    + "Contraseña: <input type='text' class='txt' name='pass' placeholder='Ingrese la contraseña'> <br><br>"
+                                    + "Confirmar contraseña: <input type='password' class='txt' name='conf' placeholder='Confirme contraseña'><br><br>"
+                                    + "<input type='button' class='btnIniReg' value='Registrar' onclick='regUsu(this.form)'></form>";
 }
 function regUsu(form){
     var usuario = form.nom.value;
@@ -116,7 +126,7 @@ function regUsu(form){
             }).catch((error) => console.log(error))
         }).catch((error) => {
             console.log(error);
-        });
+        }).then(iniSesion());
     }else{
         alert("Las contraseñas no coinciden");
     }   
@@ -124,12 +134,12 @@ function regUsu(form){
 function perfil(){
     document.getElementById('div').innerHTML = `Actualizar perfil<br>
                                                 <form>
-                                                Ingresa correo actual: <input type='email' name='emailConf' required><br>
-                                                Nuevo Correo: <input type='email' name='email'><br>
-                                                Nombre de usuario: <input type='text' name='nom' placeholder='${sessionStorage.getItem('nomUsu')}'><br>
-                                                Ingresa tu contraseña: <input type='password' name='conf' required><br>
-                                                Contraseña nueva: <input type='password' name='pass'><br>
-                                                <input type='button' value='confirmar' onclick='actualizaPerfil(this.form)'>
+                                                Ingresa correo actual: <input type='email' class='txt' name='emailConf' required><br><br>
+                                                Nuevo Correo: <input type='email' class='txt' name='email'><br><br>
+                                                Nombre de usuario: <input type='text' class='txt' name='nom' placeholder='${sessionStorage.getItem('nomUsu')}'><br><br>
+                                                Ingresa tu contraseña: <input type='password' class='txt' name='conf' required><br><br>
+                                                Contraseña nueva: <input type='password' class='txt' name='pass'><br><br>
+                                                <input type='button' class='btnIniReg' value='confirmar' onclick='actualizaPerfil(this.form)'>
                                                 </form>`                                        
 }
 function actualizaPerfil(form){
@@ -144,7 +154,7 @@ function actualizaPerfil(form){
             firebase.auth().currentUser.updateEmail(cor).then(alert("Correo actualizado por: " + cor)).catch(e => console.log(e));
             sessionStorage.setItem('cor', cor);
         }else if(nom != null && nom != ""){
-            db.collection('Usuarios').where('email', '==', sessionStorage.getItem('cor')).get().then(x => {
+            db.collection('Usuarios').where('email', '==', cor).get().then(x => {
                 x.forEach(y => {
                     y.update({
                         nomUsu: nom,
