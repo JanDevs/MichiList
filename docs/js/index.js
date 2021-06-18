@@ -82,6 +82,7 @@ function publiPost(form){
     
 }
 function iniSesion(){
+    sessionStorage.clear();
     document.getElementById('div').innerHTML = "<form id='formi'><p class='usuP'>Usuario:</p> <input class='txt' name='usu' type='text' placeholder='usuario'/>"+
                                 "<p class='usuP'>Contraseña: </p><input class='txt' name='pass' type='password' placeholder='contraseña' /><br><br><br>"+
                                 "<input type='button' class='btnIniReg' name='Button' value='Iniciar Sesión' onclick='sesion(this.form)'>     "+
@@ -95,12 +96,15 @@ function sesion(form){
         db.collection('Usuarios').where('email', '==', usuario).get().then(x => {x.forEach((y)=>{
             sessionStorage.setItem('cor', y.data().email);
             sessionStorage.setItem('nomUsu', y.data().nomUsu);
-        })})
-        console.log("Sesion iniciada")
-        document.getElementById('div').innerHTML = "Sesión de: " + sessionStorage.getItem('nomUsu');
-        document.getElementById('nav').innerHTML = "<button name= 'ini' class='btn' onclick='javascript:indexPost()'>Inicio</button>" 
+        })
+    }).finally(()=> {
+            console.log("Sesion iniciada")
+            document.getElementById('div').innerHTML = "Sesión de: " + sessionStorage.getItem('nomUsu');
+            document.getElementById('nav').innerHTML = "<button name= 'ini' class='btn' onclick='javascript:indexPost()'>Inicio</button>" 
                 + "<button id='perfil' class='btn' onclick='perfil()'>Editar perfil</button>"
                 + "<button name='cer' class='btncer' onclick='cerrarSesion()'>Cerrar sesión</button>";
+        })
+        
     }).catch((error) => {
         console.log(error);
     })
