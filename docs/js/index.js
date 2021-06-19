@@ -83,7 +83,7 @@ function publiPost(form){
 }
 function iniSesion(){
     sessionStorage.clear();
-    document.getElementById('div').innerHTML = "<form id='formi'><p class='usuP'>Usuario:</p> <input class='txt' name='usu' type='text' placeholder='usuario'/>"+
+    document.getElementById('div').innerHTML = "<form id='formi'><p class='usuP'>Correo:</p> <input class='txt' name='usu' type='text' placeholder='correo'/>"+
                                 "<p class='usuP'>Contraseña: </p><input class='txt' name='pass' type='password' placeholder='contraseña' /><br><br><br>"+
                                 "<input type='button' class='btnIniReg' name='Button' value='Iniciar Sesión' onclick='sesion(this.form)'>     "+
                                 "<input type='button' class='btnIniReg' name='button' value='Registrarme' onclick='nUsu()'>" +
